@@ -6,7 +6,7 @@
 	<groupId>com.gxjtkyy</groupId>
 	<artifactId>quality-project</artifactId>
 	<version>1.0.0</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>quality-project</name>
 	<description>品质工程项目</description>
@@ -45,9 +45,24 @@
 			<version>1.16.18</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>3.1.0</version>
+			<scope>provided</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+			<!-- 移除嵌入式tomcat插件 -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-tomcat</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -131,24 +146,24 @@
 					<fork>true</fork>
 				</configuration>
 			</plugin>
-		  	<plugin>
-				<artifactId>maven-assembly-plugin</artifactId>
-				<configuration>
-					<appendAssemblyId>false</appendAssemblyId>
-					<descriptors>
-						<descriptor>src/main/build/assembly.xml</descriptor><!--配置描述文件路径-->
-					</descriptors>
-				</configuration>
-				<executions>
-					<execution><!-- 配置执行器 -->
-						<id>make-assembly</id>
-							<phase>package</phase><!-- 绑定到package生命周期阶段上 -->
-						<goals>
-						  	<goal>single</goal><!-- 只运行一次 -->
-						</goals>
-				  </execution>
-			</executions>
-		  </plugin>
+		  	<!--<plugin>-->
+				<!--<artifactId>maven-assembly-plugin</artifactId>-->
+				<!--<configuration>-->
+					<!--<appendAssemblyId>false</appendAssemblyId>-->
+					<!--<descriptors>-->
+						<!--<descriptor>src/main/build/assembly.xml</descriptor>&lt;!&ndash;配置描述文件路径&ndash;&gt;-->
+					<!--</descriptors>-->
+				<!--</configuration>-->
+				<!--<executions>-->
+					<!--<execution>&lt;!&ndash; 配置执行器 &ndash;&gt;-->
+						<!--<id>make-assembly</id>-->
+							<!--<phase>package</phase>&lt;!&ndash; 绑定到package生命周期阶段上 &ndash;&gt;-->
+						<!--<goals>-->
+						  	<!--<goal>single</goal>&lt;!&ndash; 只运行一次 &ndash;&gt;-->
+						<!--</goals>-->
+				  <!--</execution>-->
+			<!--</executions>-->
+		  <!--</plugin>-->
 		</plugins>
 	</build>
 
