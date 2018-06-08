@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>上传图片</title>
+    <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js" type="application/javascript"/>
+</head>
+
+<body>
+<input type="file" name="file" id="id-input-file"/>
+<p/><input type="button" id="btn" value="上传"/>
+<script>
+
+    $(document).ready(function () {
+        $('#btn').click(function () {
+            var temFile = $("#id-input-file")[0].files[0];
+            var formData = new FormData();//构造空对象，下面用append 方法赋值。
+            formData.append("image", temFile);
+            $.ajax({
+                url: 'http://192.168.31.55:8080/common/upload',
+                type:'POST',
+                data:formData,
+                /**
+                 * 必须false才会避开jQuery对 formdata 的默认处理
+                 * XMLHttpRequest会对 formdata 进行正确的处理
+                 */
+                processData : false,
+                /**
+                 *必须false才会自动加上正确的Content-Type
+                 */
+                contentType : false,
+                beforeSend : function(XMLHttpRequest ){
+                    XMLHttpRequest.setRequestHeader("authorization", "bearer;eyJ0eXBlIjoiSldUIiwiYWxnIjoiSFMyNTYifQ.eyJ1c2VyTmFtZSI6IuadjuerpemeiyIsInVzZXJUeXBlIjoiMyIsInVzZXJJZCI6IjEiLCJpc3MiOiJyZXN0YXBpdXNlciIsImF1ZCI6IjA5OGY2YmNkNDYyMWQzNzNjYWRlNGU4MzI2MjdiNGY2IiwiZXhwIjoxNTI4MjU4NzU1LCJuYmYiOjE1MjgyNTUxNTV9.l9rHDVkoQ5XmJkSheW8yZQEbDbUheHoq8A8mw_j1gd0");
+                },
+                complete : function (XMLHttpRequest, textStatus){
+
+                },
+                success:function(responseStr){
+                    console.info(responseStr);
+                },
+                error:function(responseStr){
+                    alert("导入失败!");
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

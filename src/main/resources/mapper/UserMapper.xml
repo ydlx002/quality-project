@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gxjtkyy.quality.dao.UserMapper" >
+
+  <resultMap id="UserMap" type="com.gxjtkyy.quality.domain.dto.UserDTO" >
+    <result column="user_id" property="userId" jdbcType="VARCHAR" />
+    <result column="user_account" property="userAccount" jdbcType="VARCHAR" />
+    <result column="user_type" property="userType" jdbcType="INTEGER" />
+    <result column="user_name" property="userName" jdbcType="VARCHAR" />
+    <result column="department" property="department" jdbcType="VARCHAR" />
+    <result column="mobile" property="mobile" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="position" property="position" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  
+  <sql id="User_Column_List" >
+      a.user_id, a.user_account,a.user_type, a.user_name, a.department, a.mobile, a.remark, a.email, a.position, a.create_time
+  </sql>
+
+  <!--分页获取用户信息-->
+  <select id="getListByPage" resultMap="UserMap" parameterType="com.gxjtkyy.quality.domain.dto.CondictionDTO" >
+      select
+        <include refid="User_Column_List"/>
+      from t_user a
+    <where>
+      <if test="dto != null and dto.userType != null">
+        AND a.status = #{dto.userType}
+      </if>
+      <if test="dto != null and dto.userName != null and !&quot;&quot;.equals(dto.userName.trim())">
+        AND a.title like CONCAT('%', #{dto.userName}, '%')
+      </if>
+    </where>
+    order by a.create_time DESC
+    limit #{start}, #{pageSize}
+  </select>
+
+  <!--获取用户信息总数-->
+  <select id="getTotalCount"  resultType="INTEGER" parameterType="com.gxjtkyy.quality.domain.dto.CondictionDTO" >
+    select COUNT(1)
+    from t_user a
+    <where>
+      <where>
+        <if test="dto != null and dto.userType != null">
+          AND a.status = #{dto.userType}
+        </if>
+        <if test="dto != null and dto.userName != null and !&quot;&quot;.equals(dto.userName.trim())">
+          AND a.title like CONCAT('%', #{dto.userName}, '%')
+        </if>
+      </where>
+    </where>
+    order by a.create_time DESC
+  </select>
+
+  <!-- 新增用户信息 -->
+  <insert id="insertUser" parameterType="com.gxjtkyy.quality.domain.dto.UserDTO" >
+    INSERT INTO t_user
+      (user_id, user_account, password, user_type, user_name, department, mobile, remark, email, position, create_time)
+    value(
+      #{userId, jdbcType=VARCHAR},
+      #{userAccount, jdbcType=VARCHAR},
+      #{password, jdbcType=VARCHAR},
+      #{userType, jdbcType=VARCHAR},
+      #{userName, jdbcType=VARCHAR},
+      #{department, jdbcType=VARCHAR},
+      #{mobile, jdbcType=VARCHAR},
+      #{remark, jdbcType=VARCHAR},
+      #{email, jdbcType=VARCHAR},
+      #{position, jdbcType=VARCHAR},
+      #{createTime, jdbcType=TIMESTAMP}
+    )
+  </insert>
+
+  <!-- 更新用户信息 -->
+  <update id="updateUser" parameterType="com.gxjtkyy.quality.domain.dto.UserDTO" >
+    update t_user
+    <set >
+      <if test="userType != null" >
+        user_type = #{userType,jdbcType=INTEGER},
+      </if>
+      <if test="mobile!= null" >
+        mobile = #{mobile,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null" >
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="department != null" >
+        department = #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="position != null" >
+        position = #{position,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where user_id = #{userId,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

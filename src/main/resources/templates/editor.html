@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>新文章</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+
+    <style type="text/css">
+        div {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<p>标题<input type="text" id="title"/></p>
+<p>来源<input type="text" id="source"/></p>
+<p>栏目<select id="colType">
+    <option value="1">新闻头条</option>
+    <option value="2">品质创建</option>
+    <option value="3">品质大咖谈</option>
+    <option value="4">品质工程秀一秀</option>
+    <option value="5">政策文件</option>
+    <option value="6">建言献策</option>
+</select></p>
+<form action="server.php" method="post">
+    <!-- 加载编辑器的容器 -->
+    <script id="container" name="content" type="text/plain">
+            这里写你的初始化内容
+
+    </script>
+</form>
+<input type="hidden" id="token" th:value="${token}"/>
+<button id="btn_submit">提交</button>
+<script type="text/javascript" charset="utf-8" th:src="@{/ueditor.config.js}"></script>
+<script type="text/javascript" charset="utf-8" th:src="@{/ueditor.all.min.js}"></script>
+<script type="text/javascript" charset="utf-8" th:src="@{/lang/zh-cn/zh-cn.js}"></script>
+<script type="text/javascript" charset="utf-8" th:src="@{/third-party/jquery-1.10.2.js}"></script>
+<!-- 实例化编辑器 -->
+<script type="text/javascript">
+
+    $(document).ajaxSend(function(e, xhr, options) {
+        xhr.setRequestHeader("Authorization", "testett");
+    });
+
+    $(document).ready(function () {
+    var editor = UE.getEditor('container');
+    /*<![CDATA[*/
+    var $path_base = /*[[@{/}]]*/ '';
+    /*]]>*/
+        $('#btn_submit').click(function () {
+            var token = $("#token").val();
+            console.info(token);
+            if(token == null || token == ''){
+                alert("尚未登录");
+                return;
+            }
+            var postData = new Object();
+            postData.colId=$("#colType").val();
+            postData.title = $("#title").val();
+            postData.source = $("#source").val();
+            postData.content = editor.getContent();
+            var conTxt = editor.getContentTxt();
+            if(conTxt.length > 100){
+                postData.summary = conTxt.substr(0, 100);
+            }else{
+                postData.summary = conTxt;
+            }
+
+            $.ajax({
+                headers: {
+                    Accept: "application/json; charset=utf-8",
+                    Authorization: token
+                },
+                url: $path_base +'/audit/article/add',
+                type: 'POST',
+                data: JSON.stringify(postData),
+                contentType : "application/json",
+                dataType: 'json',
+                success:function(data){
+                    alert(data.code +","+data.msg);
+                },
+                error:function(data){
+
+                }
+            });
+        });
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+jdbc:
+  hostName: 192.168.31.54
+  hostPort: 3306
+  dbName: pzgc_dev
+  userName: root
+  password: 123456
+
+
+server:
+  context-path: /
+  port: 8080
